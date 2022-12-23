@@ -1,4 +1,5 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
+
 import distorm3
 import getopt, sys
 import hashlib
@@ -156,15 +157,15 @@ class MBRParser:
         return lines
 
     def Hexdump(self, data, given_offset = 0, width = 16):
-        for offset in xrange(0, len(data), width):
+        for offset in range(0, len(data), width):
             row_data = data[offset:offset + width]
-            translated_data = [x if ord(x) < 127 and ord(x) > 32 else "." for x in row_data]
-            hexdata = " ".join(["{0:02x}".format(ord(x)) for x in row_data])
+            translated_data = [chr(x) if x < 127 and x > 32 else "." for x in row_data]
+            hexdata = " ".join(["{0:02x}".format(x) for x in row_data])
 
             yield offset + given_offset, hexdata, translated_data
 
     def get_value(self, char):
-        padded = "\x00\x00\x00" + str(char)
+        padded = bytearray([0, 0, 0]) + char
         val = int(struct.unpack('>I', padded)[0])
         return val
 
@@ -195,16 +196,16 @@ class MBRParser:
         return processed_entry
 
 def usage():
-    print "mbr_parser.py:\n"
-    print " -f <mbr>"
+    print("mbr_parser.py:\n")
+    print(" -f <mbr>")
 
 def main():
     file = None
     output = sys.stdout
     try:
         opts, args = getopt.getopt(sys.argv[1:], "hf:", ["help", "file="])
-    except getopt.GetoptError, err:
-        print str(err)
+    except getopt.GetoptError as err:
+        print(str(err))
         sys.exit(2)
     for o, a in opts:
         if o in ("-h", "--help"):
@@ -226,12 +227,12 @@ def main():
     elif len(data) == 440:
         myMBR = MBRParser(data, True)
     else:
-        print "MBR file too small"
+        print("MBR file too small")
         return
 
     lines = myMBR.print_self()
     for l in lines:
-        print l
+        print(l)
 
 if __name__ == "__main__":
     main()
