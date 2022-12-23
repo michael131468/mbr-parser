@@ -21,6 +21,17 @@ it to run within.
 
 I decided to port it to Python3 to refresh it.
 
+## Containerised
+
+You can run the script from a container using the provided Containerfile.
+
+Example:
+
+```
+podman build -t mbr-parser:latest .
+podman run --rm -v $(pwd):/mnt mbr-parser -f /mnt/example/mbr.bin
+```
+
 ## LICENSE
 
 The original script contains a license disclaimer embedded that shows it is
